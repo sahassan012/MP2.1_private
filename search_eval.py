@@ -38,8 +38,11 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: {} config.toml".format(sys.argv[0]))
         sys.exit(1)
-
+    
     cfg = sys.argv[1]
+    print('--------------------')
+    print(cfg)
+    print('-------------------')
     print('Building or loading index...')
     idx = metapy.index.make_inverted_index(cfg)
     ranker = load_ranker(cfg)
