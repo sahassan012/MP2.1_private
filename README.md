@@ -4,7 +4,7 @@ In this MP, you will get familiar with building and evaluating Search Engines.
 
 ## Part 1
 
-In this part, you will use the MeTA toolkit to do the following:
+In this part, you will use the MeTA toolkit to do the following
 - create a search engine over a dataset
 - investigate the effect of parameter values for a standard retrieval function
 - write the InL2 retrieval function
