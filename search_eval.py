@@ -14,17 +14,21 @@ class InL2Ranker(metapy.index.RankingFunction):
         # You *must* call the base class constructor here!
         super(InL2Ranker, self).__init__()
 
+    def tfn(sd):
+        factor = 1 + sd.avg_d1 / sd.doc_size
+        result = math.log(factor,2)
+        return sd.doc_term_count * result
+    
     def score_one(self, sd):
         """
         You need to override this function to return a score for a single term.
         For fields available in the score_data sd object,
         @see https://meta-toolkit.org/doxygen/structmeta_1_1index_1_1score__data.html
         """
-        res = sd.doc_term_count * math.log(1 + sd.avg_d1/sd.doc_size, 2)
-        score = res / (res + self.param)
-        score *= sd.query_term_weight
-        score *= math.log((sd.num_docs + 1) / (sd.corpus_term_count + 0.5), 2)
-        return score
+        s = self.tfn(sd) / (self.tfn(sd) + self.param)
+        s *= sd.query_term_weight
+        s *= math.log((sd.num_docs + 1) / (sd.corpus_term_count + 0.5), 2)
+        return s
 
 
 def load_ranker(cfg_file):
