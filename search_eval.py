@@ -14,22 +14,19 @@ class InL2Ranker(metapy.index.RankingFunction):
         # You *must* call the base class constructor here!
         super(InL2Ranker, self).__init__()
 
-    def tfn(sd):
-        factor = 1 + sd.avg_d1 / sd.doc_size
-        result = math.log(factor,2)
-        return sd.doc_term_count * result
-    
     def score_one(self, sd):
         """
         You need to override this function to return a score for a single term.
         For fields available in the score_data sd object,
         @see https://meta-toolkit.org/doxygen/structmeta_1_1index_1_1score__data.html
         """
-        s = self.tfn(sd) / (self.tfn(sd) + self.param)
-        s *= sd.query_term_weight
-        s *= math.log((sd.num_docs + 1) / (sd.corpus_term_count + 0.5), 2)
-        return s
+        n_factor = 1 + sd.avg_d1 / sd.doc_size
+        n_tf = sd.doc_term_count * math.log(n_factor, 2)
 
+        tfn = n_tf / (n_tf + self.some_param)
+        idf = math.log((sd.num_docs + 1) / (sd.corpus_term_count + 0.5), 2)
+
+        return sd.query_term_weight * tfn * idf
 
 def load_ranker(cfg_file):
     """
@@ -37,7 +34,7 @@ def load_ranker(cfg_file):
     The parameter to this function, cfg_file, is the path to a
     configuration file used to load the index. You can ignore this for MP2.
     """
-    return InL2Ranker(some_param=1.0)
+    return metapy.index.JelinekMercer()
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
