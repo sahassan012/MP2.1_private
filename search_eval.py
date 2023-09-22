@@ -23,13 +23,14 @@ class InL2Ranker(metapy.index.RankingFunction):
         tfn = sd.doc_term_count * math.log((1 + sd.avg_dl / sd.doc_size), 2)
         return sd.query_term_weight * (tfn / (tfn + self.some_param)) * (math.log((sd.num_docs + 1) / (sd.corpus_term_count + 0.5), 2))
 
+
 def load_ranker(cfg_file):
     """
     Use this function to return the Ranker object to evaluate, e.g. return InL2Ranker(some_param=1.0) 
     The parameter to this function, cfg_file, is the path to a
     configuration file used to load the index. You can ignore this for MP2.
     """
-    return InL2Ranker(param=1)
+    return InL2Ranker(1)
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
